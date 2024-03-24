@@ -24,7 +24,7 @@ The bare minimum to prove that this idea can't really be useful in real life:
 
 * The `http` folder contains a static HTML page
 * This HTML page lets you install / uninstall / fetch a service worker
-* The service worker is hosted at `/sw.js`, which is *dynamically* generated. It will replace the target placeholder value (which doesn't change: `SERVICE_WORKER_PLEASE_REPLACE_ME`), with the hash of the worker script and the time it was served at. This let's us see, simply by navigating or manually refreshing, when the worker script is refreshed by the browser.
+* The service worker is hosted at `/sw.js`, which is *dynamically* generated. It will replace a target placeholder value in the index.html page (`SERVICE_WORKER_PLEASE_REPLACE_ME`), with a custom message containing the service worker's fetch time. This lets us see, simply by navigating or manually refreshing, when the worker script is updated by the browser.
 * The `/sw.js` script is served with immutable caching headers for a **full week**
 * The service worker is registered with `updateViaCache: all` to make sure it respects caching headers
 
@@ -35,4 +35,4 @@ $ npx wrangler pages dev http
 
 ## See it live
 
-This repo is hosted (via Cloudflare) at https://sw.tkhqlabs.xyz
+This repo is hosted (via Cloudflare) at https://sw.tkhqlabs.xyz.
