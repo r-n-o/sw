@@ -1,0 +1,133 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+  <link rel="icon" type="image/png" href="./favicon.png" />
+  <meta charset="utf-8">
+  <title>PasskeyApp experiment</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+      max-width: 800px;
+      margin: auto;
+    }
+    h2 {
+      margin-top: 48px;
+    }
+    button {
+      display: block;
+      font-size: 1.2em;
+      padding: 0.5em;
+      margin-left: 16px;
+      border-radius: 4px;
+      background-color: rgb(202, 240, 223);
+      box-shadow: #a0a0a0 1px 1px 3px;
+      cursor: pointer;
+    }
+    button:disabled {
+      background-color: rgb(203, 203, 203);
+      cursor: none;
+    }
+    #sw-status {
+      font-weight: bold;
+      font-size: 1.2em;
+    }
+    #sw-target {
+      text-align: center;
+      border: 1px #3e3e3e dashed;
+      background-color: aliceblue;
+      border-radius: 4px;
+      padding: 16px;
+      margin: 16px;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Service Worker Playground</h1>
+  <p>If you're wondering what this is about, head to <a href="https://github.com/r-n-o/sw" target="_blank">the associated repo</a> for an explanation.</p>
+
+  <p>
+    This page is static and won't change. It registers a service worker hosted at <a href="/sw.js" target="_blank"><code>/sw.js</code></a>. This route serves **dynamic** content.
+  </p>
+
+  <p>
+    The logic within the service worker is dead simple: replace placeholder text on this page with the current 
+  </p>
+
+  <h2>SW Controls</h2>
+
+  <form>
+    <p>Register the service worker at <a href="/sw.js" target="_blank"><code>/sw.js</code></a>:</p>
+    <button id="register">Register Service Worker</button>
+    <span style="font-size: 0.9em; padding-left: 20px; color: #888888">Registration status: <span id="sw-status">unregistered</span></span>
+
+    <p>Update the service worker with a fresh version:</p>
+    <button id="update" disabled>Update Service Worker</button>
+
+    <p>Un-register the service worker:</p>
+    <button id="remove" disabled>Remove Service Worker</button>
+  </form>
+
+  <h2>Target For Service Worker</h2>
+  <p>Below is our target for the service worker to replace. When nothing is installed you should see <code>SERVICE_WORKER_PLEASE_...</code>. When the service worker is activated, it will replace this placeholder with the time at which it was fetched from the server.</p>
+  <p id="sw-target">
+    SERVICE_WORKER_PLEASE_REPLACE_ME
+  </p>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+
+      navigator.serviceWorker.ready.then((registration) => {
+        document.querySelector('#sw-status').textContent = `${registration.active.state}`;
+        
+        // Bind and activate the "update" button
+        document.querySelector('#update').addEventListener("click", (e) => {
+          e.preventDefault();
+          registration.update().then(() => {
+            window.location.reload();
+          });
+        });
+        document.querySelector('#update').disabled = false;
+
+        // Bind and activate the "remove" button
+        document.querySelector('#remove').addEventListener("click", (e) => {
+          e.preventDefault();
+          registration.unregister().then(() => {
+            window.location.reload();
+          });;
+        });
+        document.querySelector('#remove').disabled = false;
+      });
+
+      document.getElementById("register").addEventListener("click", async function(e) {
+        e.preventDefault();
+        navigator.serviceWorker.register('/sw.js', {
+          // Applies to the whole domain (all paths)
+          "scope": "/",
+          // Respect cache headers
+          "updateViaCache": "all"
+        }).then(function(registration) {
+          console.log('Service worker registered successfully', registration)
+
+          var serviceWorker;
+          if (registration.installing) {
+            serviceWorker = registration.installing;
+            document.querySelector('#sw-status').textContent = 'installing';
+          } else if (registration.waiting) {
+            serviceWorker = registration.waiting;
+            document.querySelector('#sw-status').textContent = 'waiting';
+          } else if (registration.active) {
+            serviceWorker = registration.active;
+            document.querySelector('#sw-status').textContent = 'active';
+          }
+        }).catch(function(error) {
+          document.querySelector('#sw-status').textContent = `failed (${error})`;
+          console.log('Service worker failed to register', error)
+        });
+      })
+    })
+  </script>
+</body>
+</html>
