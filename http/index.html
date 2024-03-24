@@ -49,11 +49,11 @@
   <p>If you're wondering what this is about, head to <a href="https://github.com/r-n-o/sw" target="_blank">the associated repo</a> for an explanation.</p>
 
   <p>
-    This page is static and won't change. It registers a service worker hosted at <a href="/sw.js" target="_blank"><code>/sw.js</code></a>. This route serves **dynamic** content.
+    This page is static and won't change. It registers a service worker hosted at <a href="/sw.js" target="_blank"><code>/sw.js</code></a>, which serves <strong>dynamic</strong> content (time-based).
   </p>
 
   <p>
-    The logic within the service worker is dead simple: replace placeholder text on this page with the current 
+    The logic within the service worker is dead simple: replace placeholder text on this page with a message generated from within the service worker. The service worker is built so that the message it templates on the page contains the timestamp at which it is fetched from the server.
   </p>
 
   <h2>SW Controls</h2>
