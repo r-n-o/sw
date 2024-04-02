@@ -43,7 +43,8 @@ On Chrome: I've registered a service worker at a certain time and observed it **
 
 <img src="./img/worker_persisting_past_24hrs.png" width="800">
 
-Next questions to answer:
+After a week I visited the same page and the service worker was still active and the new (updated) worker was installed but "waiting" for the current session to finish. I then closed my active tab, opened a new one, and the new service worker was active as expected.
 
-* Will the worker automatically update after 7 days?
+Next questions to answer:
 * Is this Chrome behavior consistent across browsers?
+* Where is the hard evidence for "service workers can persist for more than 24hrs if `updateViaCache` is set to `all` and the right caching headers are set"?. I'd love to be able to point to lines of code in Chromium to support the observations above.
